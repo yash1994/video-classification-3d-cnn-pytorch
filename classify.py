@@ -21,12 +21,14 @@ def classify_video(video_dir, video_name, class_names, model, opt):
 
     video_outputs = []
     video_segments = []
-    for i, (inputs, segments) in enumerate(data_loader):
-        inputs = Variable(inputs, volatile=True)
-        outputs = model(inputs)
 
-        video_outputs.append(outputs.cpu().data)
-        video_segments.append(segments)
+    with torch.no_grad():
+        for i, (inputs, segments) in enumerate(data_loader):
+            inputs = Variable(inputs)
+            outputs = model(inputs)
+
+            video_outputs.append(outputs.cpu().data)
+            video_segments.append(segments)
 
     video_outputs = torch.cat(video_outputs)
     video_segments = torch.cat(video_segments)
